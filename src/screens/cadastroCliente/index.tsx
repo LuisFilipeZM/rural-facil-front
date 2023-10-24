@@ -34,7 +34,7 @@ export function CadastroCliente() {
                             </div>
                             <button type="submit" className="btn btn-success btn-lg">Cadastrar</button>
                             <div className="forgot-password mt-3">
-                                <p>Já possui uma conta?<a href="">Faça login</a></p>
+                                <p>Já possui uma conta? <a href="/login">Faça login</a></p>
                             </div>
                         </form>
                     </div>
