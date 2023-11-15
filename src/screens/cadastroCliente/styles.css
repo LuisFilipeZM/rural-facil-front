@@ -1,6 +1,6 @@
 .card-login {
     width: 700px;
-    height: 720px;
+    height: 450px;
     margin: 30px auto;
     padding: 20px;
     border-radius: 5px;
@@ -8,4 +8,5 @@
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
     justify-content: center;
     align-items: center;
+    margin-top: 10%;
 }

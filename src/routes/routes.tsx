@@ -3,6 +3,9 @@ import { Home } from "../screens/home";
 import { DefaultLayout } from "../layouts/defaultLayout";
 import { Login } from "../screens/login";
 import { CadastroCliente } from "../screens/cadastroCliente";
+import { DadosCliente } from "../screens/dadosCliente";
+
+
 
 export function Router () {
     return (
@@ -12,6 +15,7 @@ export function Router () {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/cadastro-cliente" element={<CadastroCliente />} />
+                <Route path="/dados-cliente" element={<DadosCliente />} />
             </Route>
         </Routes>
     );
