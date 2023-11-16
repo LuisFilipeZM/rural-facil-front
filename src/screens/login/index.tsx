@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import logoHome from '../../assets/logo-home.svg'
+import loadingGif from '../../assets/loading.gif'
 import '../login/styles.css'
 
 export function Login() {
@@ -7,6 +9,9 @@ export function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     async function submitForm(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -21,10 +26,18 @@ export function Login() {
             })
         });
         const data = await response.json();
-        if (rememberMe) {
-            localStorage.setItem('user', JSON.stringify(data)); // guarda o objeto retornado pela API no localStorage
+        if (response.ok) {
+            localStorage.setItem('user', JSON.stringify(data));
+            setIsLoading(true); // set loading state to true
+            setTimeout(() => {
+                setIsLoading(false); // clear loading state after 2 seconds
+                navigate('/dados-cliente');
+            }, 2000);
+        } else {
+            setShowModal(true);
         }
     }
+    
 
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center" >
@@ -58,6 +71,34 @@ export function Login() {
                     </div>
                 </div>
             </div>
+            {showModal && (
+                <div className="modal fade show" tabIndex={-1} role="dialog" aria-labelledby="exampleModalCenterTitle" aria-modal="true">
+                    <div className="modal-dialog modal-dialog-centered" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLongTitle">Erro de login</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}>
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <p>Usuário ou senha incorretos. Por favor, tente novamente.</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => setShowModal(false)}>Fechar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {isLoading && (
+                <div className="loading-overlay">
+                    <div className="loading-container">
+                        <img src={loadingGif} alt="loading" />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
+

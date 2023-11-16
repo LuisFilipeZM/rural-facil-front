@@ -4,7 +4,7 @@ import { DefaultLayout } from "../layouts/defaultLayout";
 import { Login } from "../screens/login";
 import { CadastroCliente } from "../screens/cadastroCliente";
 import { DadosCliente } from "../screens/dadosCliente";
-
+import { Mercado } from "../screens/mercado";
 
 
 export function Router () {
@@ -16,6 +16,7 @@ export function Router () {
                 <Route path="/login" element={<Login />} />
                 <Route path="/cadastro-cliente" element={<CadastroCliente />} />
                 <Route path="/dados-cliente" element={<DadosCliente />} />
+                <Route path="/mercado" element={<Mercado />} />
             </Route>
         </Routes>
     );

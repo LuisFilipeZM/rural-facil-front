@@ -11,6 +11,7 @@ export function CadastroCliente() {
     const [role] = useState(['ROLE_CLIENTE']);
     const [username, setUsername] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     async function submitForm() {
         event?.preventDefault();
@@ -18,7 +19,7 @@ export function CadastroCliente() {
             setShowModal(true);
             return;
         }
-        await fetch('http://localhost:8080/api/auth/signup', {
+        const response = await fetch('http://localhost:8080/api/auth/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -28,7 +29,10 @@ export function CadastroCliente() {
                 role,
                 username
             })
-        })
+        });
+        if (response.ok) {
+            setShowSuccessModal(true);
+        }
     }
 
     function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -45,7 +49,7 @@ export function CadastroCliente() {
             <div style={{ paddingLeft: 150, paddingRight: 150 }}>
                 <div className="d-flex justify-content-center align-items-center">
                     <div className="card-login">
-                        <h1 className='text-center m-2'>Crie sua conta, grátuita!</h1>
+                        <h1 className='text-center m-2'>Crie sua conta, grátis!</h1>
                         <form>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputEmail1" className="form-label">Email</label>
@@ -69,11 +73,22 @@ export function CadastroCliente() {
             </div>
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Senhas não coincidem</Modal.Title>
+                    <Modal.Title>Senhas não coincidem!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>As senhas digitadas devem ser iguais. Por favor, tente novamente.</Modal.Body>
+                <Modal.Body>As senhas devem ser iguais. Por favor, tente novamente.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Fechar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Conta criada com sucesso!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Sua conta foi criada com sucesso. Faça login para acessar sua conta.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
                         Fechar
                     </Button>
                 </Modal.Footer>
