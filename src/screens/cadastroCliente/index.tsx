@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './styles.css';
 import { Modal, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
 
 export function CadastroCliente() {
@@ -71,18 +72,18 @@ export function CadastroCliente() {
                     </div>
                 </div>
             </div>
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Senhas não coincidem!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>As senhas devem ser iguais. Por favor, tente novamente.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Fechar
+                        <Link to="/login">Fechar</Link>
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
+            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Conta criada com sucesso!</Modal.Title>
                 </Modal.Header>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import logoHome from '../../assets/logo-home.svg'
 import loadingGif from '../../assets/loading.gif'
 import '../login/styles.css'
@@ -24,14 +25,15 @@ export function Login() {
                 username,
                 password
             })
-        });
-        const data = await response.json();
-        if (response.ok) {
+        });  
+        if (response.status === 200) {
+            const data = await response.json();
             localStorage.setItem('user', JSON.stringify(data));
             setIsLoading(true); // set loading state to true
             setTimeout(() => {
-                setIsLoading(false); // clear loading state after 2 seconds
+                setIsLoading(false); // clear loading state after 2 seconds 
                 navigate('/dados-cliente');
+                window.location.reload(); // refresh the page
             }, 2000);
         } else {
             setShowModal(true);
@@ -47,7 +49,7 @@ export function Login() {
                 </div>
                 <div className="col-6 d-flex justify-content-center align-items-center">
                     <div className="card-entrar">
-                        <h1 className='text-center'><strong>Entrar</strong></h1>
+                        <h1 className='text-center'>Entrar</h1>
                         <form onSubmit={submitForm}>
                             <div className="mb-2">
                                 <label htmlFor="exampleInputEmail1" className="form-label">E-mail</label>
@@ -71,26 +73,17 @@ export function Login() {
                     </div>
                 </div>
             </div>
-            {showModal && (
-                <div className="modal fade show" tabIndex={-1} role="dialog" aria-labelledby="exampleModalCenterTitle" aria-modal="true">
-                    <div className="modal-dialog modal-dialog-centered" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLongTitle">Erro de login</h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}>
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Usuário ou senha incorretos. Por favor, tente novamente.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => setShowModal(false)}>Fechar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Erro de login</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Usuário ou senha incorretos. Por favor, tente novamente.</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Fechar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             {isLoading && (
                 <div className="loading-overlay">
                     <div className="loading-container">
@@ -101,4 +94,3 @@ export function Login() {
         </div>
     );
 }
-
