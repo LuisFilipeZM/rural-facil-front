@@ -131,25 +131,25 @@ export function DadosCliente() {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="numero" className="form-label">Número</label>
-                                    <input type="text" className="form-control" id="numero" value={endereco.numero} onChange={e => setEndereco({...endereco, numero: e.target.value})} />
+                                    <input type="text" className="form-control" id="numero" placeholder="123" value={endereco.numero} onChange={e => setEndereco({...endereco, numero: e.target.value})} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="complemento" className="form-label">Complemento</label>
-                                    <input type="text" className="form-control" id="complemento" value={endereco.complemento} onChange={e => setEndereco({...endereco, complemento: e.target.value})} />
+                                    <input type="text" className="form-control" id="complemento" placeholder="Apto. sol nascente" value={endereco.complemento} onChange={e => setEndereco({...endereco, complemento: e.target.value})} />
                                 </div>
                             </Col>
                             <Col>
                                 <div className="mb-3">
                                     <label htmlFor="municipio" className="form-label">Município</label>
-                                    <input type="text" className="form-control" id="municipio" value={endereco.municipio} onChange={e => setEndereco({...endereco, municipio: e.target.value})} />
+                                    <input type="text" className="form-control" id="municipio" value={endereco.municipio} placeholder="Criciúma" onChange={e => setEndereco({...endereco, municipio: e.target.value})} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="cep" className="form-label">CEP</label>
-                                    <input type="text" className="form-control" id="cep" value={endereco.cep} onChange={e => setEndereco({...endereco, cep: e.target.value})} />
+                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" onChange={e => setEndereco({...endereco, cep: e.target.value})} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="bairro" className="form-label">Bairro</label>
-                                    <input type="text" className="form-control" id="bairro" value={endereco.bairro} onChange={e => setEndereco({...endereco, bairro: e.target.value})} />
+                                    <input type="text" className="form-control" id="bairro" value={endereco.bairro} placeholder="Centro" onChange={e => setEndereco({...endereco, bairro: e.target.value})} />
                                 </div>
                             </Col>
                         </Row>

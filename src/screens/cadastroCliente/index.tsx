@@ -79,7 +79,7 @@ export function CadastroCliente() {
                 <Modal.Body>As senhas devem ser iguais. Por favor, tente novamente.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        <Link to="/login">Fechar</Link>
+                        Fechar
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -90,7 +90,7 @@ export function CadastroCliente() {
                 <Modal.Body>Sua conta foi criada com sucesso. Faça login para acessar sua conta.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
-                        Fechar
+                        <Link to="/login">Fechar</Link>
                     </Button>
                 </Modal.Footer>
             </Modal>

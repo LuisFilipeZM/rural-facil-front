@@ -6,6 +6,7 @@ import { CadastroCliente } from "../screens/cadastroCliente";
 import { DadosCliente } from "../screens/dadosCliente";
 import { Mercado } from "../screens/mercado";
 import { DetalheProduto } from "../screens/detealheProduto";
+import { CadastroProduto } from "../screens/cadastroProduto";
 
 
 export function Router () {
@@ -18,6 +19,7 @@ export function Router () {
                 <Route path="/dados-cliente" element={<DadosCliente />} />
                 <Route path="/mercado" element={<Mercado />} />
                 <Route path="/produto" element={<DetalheProduto />} />
+                <Route path="/cadastro-produto" element={<CadastroProduto />} />r
             </Route>
         </Routes>
     );
