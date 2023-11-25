@@ -101,7 +101,7 @@ export function Mercado() {
                             <div className="card-body">
                                 <h5 className="card-title">Filtros</h5>
                                 <div className="form-group">
-                                    <label htmlFor="texto">Filtrar por texto:</label>
+                                    <label htmlFor="texto">Agricultor:</label>
                                     <input type="text" className="form-control" id="texto" />
                                 </div>
                                 <div className="form-group">

@@ -3,7 +3,7 @@ import { Modal, Button, Row, Col } from "react-bootstrap";
 import './styles.css';
 
 export function DadosCliente() {
-
+    const [accessoPessoa, setAccessoPessoa] = useState('');
     const [cpf, setCpf] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [email, setEmail] = useState('');
@@ -15,7 +15,6 @@ export function DadosCliente() {
         logradouro: '',
         municipio: '',
         numero: '',
-        tipoEndereco: ''
     });
     const [nome, setNome] = useState('');
     const [whatsApp, setWhatsApp] = useState('');
@@ -32,7 +31,6 @@ export function DadosCliente() {
         logradouro: '',
         municipio: '',
         numero: '',
-        tipoEndereco: ''
     });
 
     const handleSaveEndereco = () => {
@@ -48,20 +46,32 @@ export function DadosCliente() {
             logradouro: '',
             municipio: '',
             numero: '',
-            tipoEndereco: ''
         });
         handleCloseModal();
     }
 
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.id;
+    const token = user.accessToken;
+    setAccessoPessoa(user.username);
+
     async function submitForm() {
         event?.preventDefault();
-        await fetch('http://localhost:8080/api/cliente', {
+
+        if (!userId) {
+            console.error('User ID is undefined');
+            return;
+        }
+
+        await fetch(`http://localhost:8080/api/cliente`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` // Adiciona o token na header
             },
             body: JSON.stringify({
-                cpf,
+                accessoPessoa,
+                cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
                 dataNascimento,
                 email,
                 endereco,

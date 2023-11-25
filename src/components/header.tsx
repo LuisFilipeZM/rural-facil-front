@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import logoHeader from '../assets/logo-header.svg';
+import { FaSignOutAlt } from 'react-icons/fa';
+
 
 export function Header() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -22,7 +24,12 @@ export function Header() {
                 </div>
                 <div>
                     {user && Object.keys(user).length !== 0 ? (
-                        <p>{user.username} <a href="/" onClick={logout} style={{color: 'red', textDecoration: 'none'}}>Sair</a></p>
+                        <p>
+                            {user.username} 
+                            <a href="/" onClick={logout} style={{color: 'red', textDecoration: 'none'}}>
+                                <FaSignOutAlt style={{verticalAlign: 'middle', marginLeft: '0.5rem'}} />
+                            </a>
+                        </p>
                     ) : (
                         <>
                             <Link to="/cadastro-cliente" className="btn btn-outline-success m-2">Cadastre-se</Link>
