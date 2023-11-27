@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './styles.css';
 import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
@@ -10,13 +10,15 @@ export function CadastroProduto() {
     const [category, setCategory] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [images, setImages] = useState<File[]>([]);
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     async function submitForm(event: React.FormEvent) {
         event.preventDefault();
-        const response = await fetch('http://localhost:8080/api/products', {
+        const response = await fetch('http://localhost:8080/api/produto', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${user?.accessToken}`
             },
             body: JSON.stringify({
                 name,

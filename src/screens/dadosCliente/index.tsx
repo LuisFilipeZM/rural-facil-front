@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, Row, Col } from "react-bootstrap";
 import './styles.css';
 
 export function DadosCliente() {
-    const [accessoPessoa, setAccessoPessoa] = useState('');
+    const [user, setUser] = useState(null);
     const [cpf, setCpf] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
     const [email, setEmail] = useState('');
@@ -19,66 +19,51 @@ export function DadosCliente() {
     const [nome, setNome] = useState('');
     const [whatsApp, setWhatsApp] = useState('');
     const [showModal, setShowModal] = useState(false);
+    const [apiResponse, setApiResponse] = useState(null);
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
 
-    const [novoEndereco, setNovoEndereco] = useState({
-        bairro: '',
-        cep: '',
-        complemento: '',
-        inscricaoIncra: '',
-        logradouro: '',
-        municipio: '',
-        numero: '',
-    });
-
     const handleSaveEndereco = () => {
-        setEndereco(prevState => ({
-            ...prevState,
-            novoEndereco
-        }));
-        setNovoEndereco({
-            bairro: '',
-            cep: '',
-            complemento: '',
-            inscricaoIncra: '',
-            logradouro: '',
-            municipio: '',
-            numero: '',
-        });
         handleCloseModal();
     }
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const userId = user.id;
-    const token = user.accessToken;
-    setAccessoPessoa(user.username);
+    async function getUsuario() {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        if (user) {
+            setUser(user);
+        }
+    }
 
-    async function submitForm() {
-        event?.preventDefault();
+    async function submitForm(event: React.FormEvent) {
+        event.preventDefault();
 
-        if (!userId) {
+        if (!user && !user?.accessToken) {
             console.error('User ID is undefined');
             return;
         }
 
-        await fetch(`http://localhost:8080/api/cliente`, {
+        const response = await fetch(`http://localhost:8080/api/cliente`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Adiciona o token na header
+                'Authorization': `Bearer ${user?.accessToken}` // Adiciona o token na header
             },
             body: JSON.stringify({
-                accessoPessoa,
+                acessoPessoa: {
+                    login: user?.username,
+                },
                 cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
-                dataNascimento,
+                dataNascimento: new Date(dataNascimento).toISOString(),
                 email,
                 endereco,
                 nome,
                 whatsApp
             })
-        })
+        });
+
+        const data = await response.json();
+        setApiResponse(data); // Set the API response
     }
 
     function formatCPF(value: string) {
@@ -90,13 +75,43 @@ export function DadosCliente() {
         return `${firstPart}.${secondPart}.${thirdPart}-${verificationDigit}`;
     }
 
+    useEffect(() => {
+        getUsuario();
+        fetchClientData();
+    }, [])
+
+    async function fetchClientData() {
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        const userId = userData?.id;
+
+        try {
+                const response = await fetch(`http://localhost:8080/api/cliente/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userData?.accessToken}` // Adiciona o token na header
+                },
+            });
+
+            const data = await response.json();
+            // Set the client data
+            setNome(data.nome);
+            setCpf(data.cpf);
+            setDataNascimento(data.dataNascimento);
+            setEmail(data.email);
+            setWhatsApp(data.whatsApp);
+        } catch (error) {
+            console.error('Error fetching client data:', error);
+        }
+    }
+
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center" >
             <div style={{ paddingLeft: 150, paddingRight: 150 }}>
                 <div className="d-flex justify-content-center align-items-center">
                     <div className="card-dados">
                         <h1 className='text-center'>Seus Dados</h1>
-                        <form>
+                        <form onSubmit={submitForm}>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputEmail1" className="form-label">Nome</label>
                                 <input type="text" className="form-control" id="exampleInputEmail1" value={nome} onChange={e => setNome(e.target.value)} />
@@ -122,7 +137,7 @@ export function DadosCliente() {
                                 <label htmlFor="exampleInputPassword2" className="form-label">WhatsApp</label>
                                 <input type="text" className="form-control" id="exampleInputPassword2" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} />
                             </div>
-                            <button type="submit" className="btn btn-success" onClick={submitForm}>Salvar dados</button>
+                            <button type="submit" className="btn btn-success">Salvar dados</button>
                         </form>
                     </div>
                 </div>
@@ -174,6 +189,16 @@ export function DadosCliente() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {apiResponse && (
+                <Modal show={apiResponse !== null} onHide={() => setApiResponse(null)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>API Response</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+                    </Modal.Body>
+                </Modal>
+            )}
         </div>
     )
 }

@@ -4,12 +4,12 @@ import { Modal, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 
-export function CadastroCliente() {
+export function CadastroAgricultor() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [role] = useState(['ROLE_CLIENTE']);
+    const [role] = useState(['ROLE_AGRICULTOR']);
     const [username, setUsername] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -50,7 +50,7 @@ export function CadastroCliente() {
             <div style={{ paddingLeft: 150, paddingRight: 150 }}>
                 <div className="d-flex justify-content-center align-items-center">
                     <div className="card-login">
-                        <h1 className='text-center m-2'>Crie sua conta, grátis!</h1>
+                        <h1 className='text-center m-2'>Cadastrar Agricultor!</h1>
                         <form>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputEmail1" className="form-label">Email</label>

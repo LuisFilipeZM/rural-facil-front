@@ -14,44 +14,21 @@ export function Mercado() {
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState<Product[]>([]);
 
-    const products: Product[] = [
-        {
-            nome: 'Produto 1',
-            descricao: 'Descrição do produto 1',
-            preco: 10,
-            image: 'https://via.placeholder.com/150',
-            vendedor: 'Vendedor 1'
-        },
-        {
-            nome: 'Produto 2',
-            descricao: 'Descrição do produto 2',
-            preco: 20,
-            image: 'https://via.placeholder.com/150',
-            vendedor: 'Vendedor 2'
-        },
-        {
-            nome: 'Produto 3',
-            descricao: 'Descrição do produto 3',
-            preco: 30,
-            image: 'https://via.placeholder.com/150',
-            vendedor: 'Vendedor 3'
-        },
-        {
-            nome: 'Produto 4',
-            descricao: 'Descrição do produto 4',
-            preco: 40,
-            image: 'https://via.placeholder.com/150',
-            vendedor: 'Vendedor 4'
-        },
-        {
-            nome: 'Produto 5',
-            descricao: 'Descrição do produto 5',
-            preco: 50,
-            image: 'https://via.placeholder.com/150',
-            vendedor: 'Vendedor 5'
-        },
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/anuncio');
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     useEffect(() => {
         setTimeout(() => {
