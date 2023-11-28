@@ -13,7 +13,7 @@ export function Home() {
                     <button className="btn btn-success"><a href="/login" style={{textDecoration: 'none', color: '#ffffff'}}>Acesse agora ➤</a></button>
                 </div>
                 <div className="col-6 d-flex justify-content-center align-items-center">
-                    <img src={logoHome} alt="logo" />
+                    <img src={logoHome} alt="logo"/>
                 </div>
             </div>
         </div>

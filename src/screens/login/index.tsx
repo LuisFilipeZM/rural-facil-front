@@ -29,11 +29,11 @@ export function Login() {
         if (response.status === 200) {
             const data = await response.json();
             localStorage.setItem('user', JSON.stringify(data));
-            setIsLoading(true); // set loading state to true
+            setIsLoading(true);
             setTimeout(() => {
-                setIsLoading(false); // clear loading state after 2 seconds 
+                setIsLoading(false);
                 navigate('/dados-cliente');
-                window.location.reload(); // refresh the page
+                window.location.reload();
             }, 2000);
         } else {
             setShowModal(true);

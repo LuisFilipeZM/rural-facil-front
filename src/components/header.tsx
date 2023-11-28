@@ -16,7 +16,7 @@ export function Header() {
                     }
                 });
                 const data = await response.json();
-                if (data[0].admin === "ROLE_ADMIN") {
+                if (data.admin === "ROLE_ADMIN") {
                     setIsAdmin(true);
                 }
             } catch (error) {
@@ -38,7 +38,9 @@ export function Header() {
                 <div>
                     <Link to="/" className="navbar-brand m-2">Inicio</Link>
                     <Link to="/" className="navbar-brand m-2">Sobre</Link>
-                    <Link to="/mercado" className="navbar-brand m-2">Mercado</Link>
+                    {user && Object.keys(user).length !== 0 && (
+                        <Link to="/mercado" className="navbar-brand m-2">Mercado</Link>
+                    )}
                 </div>
                 <div>
                     <img src={logoHeader} alt="logo" />

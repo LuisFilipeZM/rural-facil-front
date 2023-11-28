@@ -7,8 +7,9 @@ import { CadastroCliente } from "../screens/cadastroCliente";
 import { DadosCliente } from "../screens/dadosCliente";
 import { Mercado } from "../screens/mercado";
 import { DetalheProduto } from "../screens/detealheProduto";
-import { CadastroProduto } from "../screens/cadastroProduto";
 import { CadastroAgricultor } from "../screens/cadastroAgricultor";
+import { DadosAgricultor } from "../screens/dadosAgricultor";
+import { CadastroAnuncio } from "../screens/cadastroAnuncio";
 
 export function Router() {
     const navigate = useNavigate();
@@ -28,9 +29,10 @@ export function Router() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/cadastro-cliente" element={<CadastroCliente />} />
                 <Route path="/dados-cliente" element={<DadosCliente />} />
+                <Route path="/dados-agricultor" element={<DadosAgricultor />} />
                 <Route path="/mercado" element={<Mercado />} />
                 <Route path="/produto" element={<DetalheProduto />} />
-                <Route path="/cadastro-produto" element={<CadastroProduto />} />
+                <Route path="/cadastro-anuncio" element={<CadastroAnuncio />} />
                 <Route path="/cadastro-agricultor" element={<CadastroAgricultor/>} />
             </Route>
         </Routes>

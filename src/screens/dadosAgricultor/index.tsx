@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Modal, Button, Row, Col } from "react-bootstrap";
 import './styles.css';
 
-export function DadosCliente() {
+export function DadosAgricultor() {
     const [user, setUser] = useState(null);
+    const [ativo, setAtivo] = useState(true);
+    const [caf, setCaf] = useState('');
+    const [inscricaoEstadual, setInscricaoEstadual] = useState('');
     const [cpf, setCpf] = useState('');
     const [dataNascimento, setDataNascimento] = useState('');
-    const [email, setEmail] = useState('');
     const [endereco, setEndereco] = useState({
         bairro: '',
         cep: '',
@@ -18,6 +20,7 @@ export function DadosCliente() {
     });
     const [nome, setNome] = useState('');
     const [whatsApp, setWhatsApp] = useState('');
+    const [organico, setOrganico] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [apiResponse, setApiResponse] = useState(null);
 
@@ -43,29 +46,32 @@ export function DadosCliente() {
             return;
         }
 
-        const response = await fetch(`http://localhost:8080/api/cliente`, {
+        const response = await fetch(`http://localhost:8080/api/agricultor`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 //@ts-ignore
-                'Authorization': `Bearer ${user?.accessToken}` // Adiciona o token na header
+                'Authorization': `Bearer ${user?.accessToken}`
             },
             body: JSON.stringify({
                 acessoPessoa: {
                     //@ts-ignore
                     login: user?.username,
                 },
+                ativo,
+                caf,
                 cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
                 dataNascimento: new Date(dataNascimento).toISOString(),
-                email,
                 endereco,
+                inscricaoEstadual,
                 nome,
+                organico,
                 whatsApp
             })
         });
 
         const data = await response.json();
-        setApiResponse(data); // Set the API response
+        setApiResponse(data.erro);
     }
 
     function formatCPF(value: string) {
@@ -88,21 +94,23 @@ export function DadosCliente() {
         const userId = userData?.id;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/cliente/${userId}`, {
+            const response = await fetch(`http://localhost:8080/api/agricultor/${userId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userData?.accessToken}` // Adiciona o token na header
+                    'Authorization': `Bearer ${userData?.accessToken}`
                 },
             });
 
             const data = await response.json();
-            // Set the client data
+            setAtivo(data.ativo);
+            setCaf(data.caf);
+            setInscricaoEstadual(data.inscricaoEstadual);
             setNome(data.nome);
             setCpf(data.cpf);
             setDataNascimento(new Date(data.dataNascimento[0], data.dataNascimento[1] - 1, data.dataNascimento[2]).toISOString().split('T')[0]);
             setWhatsApp(data.whatsApp);
-            setEndereco(data.endereco); // Set the address data
+            setEndereco(data.endereco);
         } catch (error) {
             console.error('Error fetching client data:', error);
         }
@@ -115,13 +123,22 @@ export function DadosCliente() {
                     <div className="card-dados">
                         <h1 className='text-center'>Seus Dados</h1>
                         <form onSubmit={submitForm}>
-                            <div className="mb-3">
-                                <label htmlFor="exampleInputEmail1" className="form-label">Nome</label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" value={nome} onChange={e => setNome(e.target.value)} />
+                            <div className="mb-3 d-flex justify-content-center">
+                                <Button variant={ativo ? 'success' : 'secondary'} onClick={() => setAtivo(!ativo)}>
+                                    {ativo ? 'Ativo' : 'Inativo'}
+                                </Button>
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="exampleInputEmail1" className="form-label">CPF</label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" value={cpf} onChange={e => setCpf(formatCPF(e.target.value))} />
+                                <label className="form-label">Nome</label>
+                                <input type="text" className="form-control" value={nome} onChange={e => setNome(e.target.value)} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">CAF</label>
+                                <input type="text" className="form-control" value={caf} onChange={e => setCaf(e.target.value)} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">CPF</label>
+                                <input type="text" className="form-control" value={cpf} onChange={e => setCpf(formatCPF(e.target.value))} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Data de nascimento</label>
@@ -133,8 +150,12 @@ export function DadosCliente() {
                                 </Button>
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="exampleInputPassword2" className="form-label">WhatsApp</label>
-                                <input type="text" className="form-control" id="exampleInputPassword2" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} />
+                                <label className="form-label">Incrição estadual</label>
+                                <input type="text" className="form-control" value={inscricaoEstadual} onChange={e => setInscricaoEstadual(e.target.value)} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">WhatsApp / Celular</label>
+                                <input type="text" className="form-control" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} />
                             </div>
                             <button type="submit" className="btn btn-success">Salvar dados</button>
                         </form>
@@ -191,7 +212,7 @@ export function DadosCliente() {
             {apiResponse && (
                 <Modal show={apiResponse !== null} onHide={() => setApiResponse(null)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>API Response</Modal.Title>
+                        <Modal.Title>Algo deu errado!</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <pre>{JSON.stringify(apiResponse, null, 2)}</pre>

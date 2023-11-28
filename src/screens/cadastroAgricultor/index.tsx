@@ -65,9 +65,6 @@ export function CadastroAgricultor() {
                                 <input type="password" className="form-control" id="exampleInputPassword2" value={confirmPassword} onChange={handleConfirmPasswordChange}  />
                             </div>
                             <button type="submit" className="btn btn-success btn-lg" onClick={submitForm}>Cadastrar</button>
-                            <div className="forgot-password mt-3">
-                                <p>Já possui uma conta? <a href="/login">Faça login</a></p>
-                            </div>
                         </form>
                     </div>
                 </div>
