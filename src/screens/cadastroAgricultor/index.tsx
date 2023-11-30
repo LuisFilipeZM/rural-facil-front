@@ -37,7 +37,7 @@ export function CadastroAgricultor() {
     }
 
     function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
-        setEmail(e.target.value);
+        setEmail(e.target.value); 
         setUsername(e.target.value);
     }
 

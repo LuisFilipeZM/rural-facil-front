@@ -186,7 +186,25 @@ export function DadosAgricultor() {
                             <Col>
                                 <div className="mb-3">
                                     <label htmlFor="municipio" className="form-label">Município</label>
-                                    <input type="text" className="form-control" id="municipio" value={endereco.municipio} placeholder="Criciúma" onChange={e => setEndereco({...endereco, municipio: e.target.value})} />
+                                    <select className="form-select" id="municipio" value={endereco.municipio} onChange={e => setEndereco({...endereco, municipio: e.target.value})}>
+                                        <option value="">Selecione o município</option>
+                                        <option value="Araranguá">Araranguá</option>
+                                        <option value="Criciúma">Criciúma</option>
+                                        <option value="Içara">Içara</option>
+                                        <option value="Jacinto Machado">Jacinto Machado</option>
+                                        <option value="Lauro Müller">Lauro Müller</option>
+                                        <option value="Maracajá">Maracajá</option>
+                                        <option value="Meleiro">Meleiro</option>
+                                        <option value="Muller">Muller</option>
+                                        <option value="Morro da Fumaça">Morro da Fumaça</option>
+                                        <option value="Nova Veneza">Nova Veneza</option>
+                                        <option value="Praia Grande">Praia Grande</option>
+                                        <option value="São João do Sul">São João do Sul</option>
+                                        <option value="Timbé do Sul">Timbé do Sul</option>
+                                        <option value="Turvo">Turvo</option>
+                                        <option value="Siderópolis">Siderópolis</option>
+                                        <option value="Urussanga">Urussanga</option>
+                                    </select>
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="cep" className="form-label">CEP</label>
