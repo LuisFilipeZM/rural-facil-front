@@ -63,7 +63,7 @@ export function DadosCliente() {
         });
 
         const data = await response.json();
-        setApiResponse(data); // Set the API response
+        setApiResponse(data);
     }
 
     function formatCPF(value: string) {
@@ -113,16 +113,16 @@ export function DadosCliente() {
                         <h1 className='text-center'>Seus Dados</h1>
                         <form onSubmit={submitForm}>
                             <div className="mb-3">
-                                <label htmlFor="exampleInputEmail1" className="form-label">Nome</label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" value={nome} onChange={e => setNome(e.target.value)} required />
+                                <label className="form-label">Nome</label>
+                                <input type="text" className="form-control" id="nome" value={nome} onChange={e => setNome(e.target.value)} required />
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="exampleInputEmail1" className="form-label">CPF</label>
-                                <input type="text" className="form-control" id="exampleInputEmail1" value={cpf} onChange={e => setCpf(formatCPF(e.target.value))} required />
+                                <label className="form-label">CPF</label>
+                                <input type="text" className="form-control" id="cpf" value={cpf} onChange={e => setCpf(formatCPF(e.target.value))} required />
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="exampleInputPassword1" className="form-label">Data de nascimento</label>
-                                <input type="date" className="form-control" id="exampleInputPassword1" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} required />
+                                <label className="form-label">Data de nascimento</label>
+                                <input type="date" className="form-control" id="datanascimento" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} required />
                             </div>
                             <div className="mb-3">
                                 <Button variant="primary" onClick={handleShowModal}>
@@ -130,8 +130,8 @@ export function DadosCliente() {
                                 </Button>
                             </div>
                             <div className="mb-3">
-                                <label htmlFor="exampleInputPassword2" className="form-label">WhatsApp</label>
-                                <input type="text" className="form-control" id="exampleInputPassword2" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} required />
+                                <label className="form-label">WhatsApp</label>
+                                <input type="text" className="form-control" id="whatsapp" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} required />
                             </div>
                             <button type="submit" className="btn btn-success">Salvar dados</button>
                         </form>
@@ -140,7 +140,7 @@ export function DadosCliente() {
             </div>
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Adicionar Endereço</Modal.Title>
+                    <Modal.Title>{endereco.logradouro ? 'Alterar Endereço' : 'Adicionar Endereço'}</Modal.Title> 
                 </Modal.Header>
                 <Modal.Body>
                     <form>
@@ -152,7 +152,12 @@ export function DadosCliente() {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="numero" className="form-label">Número</label>
-                                    <input type="number" className="form-control" id="numero" placeholder="123" value={endereco.numero} onChange={e => setEndereco({...endereco, numero: e.target.value})} required />
+                                    <input type="number" className="form-control" id="numero" placeholder="123" value={endereco.numero} onChange={e => {
+                                        const value = parseInt(e.target.value);
+                                        if (value >= 0) {
+                                            setEndereco({...endereco, numero: String(value)});
+                                        }
+                                    }} required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="complemento" className="form-label">Complemento</label>
@@ -184,7 +189,7 @@ export function DadosCliente() {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="cep" className="form-label">CEP</label>
-                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" onChange={e => setEndereco({...endereco, cep: e.target.value})} required />
+                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" maxLength={8} onChange={e => setEndereco({...endereco, cep: e.target.value})} required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="bairro" className="form-label">Bairro</label>

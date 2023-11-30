@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import './style.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface Product {
     nome: string;
@@ -15,6 +17,7 @@ export function Mercado() {
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(true);
     const [products, setProducts] = useState<Product[]>([]);
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -156,6 +159,11 @@ export function Mercado() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {user.roles[0] === 'Agricultor' && (
+                <button className="btn btn-primary btn-floating btn-lg" id="novoAnuncio" title="Novo Anuncio">
+                    <FontAwesomeIcon icon={faPlus} />
+                </button>
+            )}
         </div>
     );
 }

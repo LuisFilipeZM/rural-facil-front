@@ -38,9 +38,7 @@ export function Header() {
                 <div>
                     <Link to="/" className="navbar-brand m-2">Inicio</Link>
                     <Link to="/" className="navbar-brand m-2">Sobre</Link>
-                    {user && Object.keys(user).length !== 0 && (
-                        <Link to="/mercado" className="navbar-brand m-2">Mercado</Link>
-                    )}
+                    <Link to="/mercado" className="navbar-brand m-2">Mercado</Link>
                 </div>
                 <div>
                     <img src={logoHeader} alt="logo" />
@@ -50,7 +48,11 @@ export function Header() {
                         <>{isAdmin && (
                             <Link to="/cadastro-agricultor" className="btn btn-success btn-sm m-2">Cadastrar agricultor</Link>
                         )}
-                            <Link to="/dados-cliente" style={{ textDecoration: 'none', color: "black" }}>{user.username}</Link>
+                            {user.roles[0] === "Agricultor" ? (
+                                <Link to="/dados-agricultor" style={{ textDecoration: 'none', color: "black" }}>{user.username}</Link>
+                            ) : (
+                                <Link to="/dados-cliente" style={{ textDecoration: 'none', color: "black" }}>{user.username}</Link>
+                            )}
                             <a href="/" onClick={logout} style={{ color: 'red', textDecoration: 'none' }}>
                                 <FaSignOutAlt style={{ verticalAlign: 'middle', marginLeft: '0.5rem' }} />
                             </a>

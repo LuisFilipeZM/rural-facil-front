@@ -177,7 +177,7 @@ export function CadastroAnuncio() {
                 <Modal.Body>O produto foi cadastrado com sucesso.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        <Link to="/produtos">Fechar</Link>
+                        <Link to="/lista-anuncio">Fechar</Link>
                     </Button>
                 </Modal.Footer>
             </Modal>

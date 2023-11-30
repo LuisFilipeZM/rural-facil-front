@@ -1,7 +1,6 @@
 import './styles.css';
 import { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 
 
 export function CadastroAgricultor() {
@@ -84,10 +83,10 @@ export function CadastroAgricultor() {
                 <Modal.Header closeButton>
                     <Modal.Title>Conta criada com sucesso!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Sua conta foi criada com sucesso. Faça login para acessar sua conta.</Modal.Body>
+                <Modal.Body>Conta de agricultor criada com sucesso!</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
-                        <Link to="/login">Fechar</Link>
+                        Fechar
                     </Button>
                 </Modal.Footer>
             </Modal>

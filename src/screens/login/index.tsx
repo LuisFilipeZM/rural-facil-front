@@ -32,8 +32,11 @@ export function Login() {
             setIsLoading(true);
             setTimeout(() => {
                 setIsLoading(false);
-                navigate('/dados-cliente');
-                window.location.reload();
+                if (data.roles[0] === "Agricultor") {
+                        navigate('/dados-agricultor');
+                    } else {
+                        navigate('/dados-cliente');    
+                    }
             }, 2000);
         } else {
             setShowModal(true);

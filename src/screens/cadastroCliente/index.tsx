@@ -1,6 +1,6 @@
-import './styles.css';
 import { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button } from 'react-bootstrap'; 
+import './styles.css';
 import { Link } from 'react-router-dom';
 
 
