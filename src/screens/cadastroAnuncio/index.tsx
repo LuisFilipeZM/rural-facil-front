@@ -16,13 +16,20 @@ export function CadastroAnuncio() {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const [agricultor, setAgricultor] = useState(null);
 
-
     useEffect(() => {
-        async function fetchData() {
-            const response = await fetch(`http://localhost:8080/api/agricultor/${user?.id}`);
-            const data = await response.json();
-            setAgricultor(data);
-        }
+        const fetchData = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/agricultor/${user?.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${user?.accessToken}`
+                    }
+                });
+                const data = await response.json();
+                setAgricultor(data);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
 
         fetchData();
     }, []);
@@ -37,6 +44,9 @@ export function CadastroAnuncio() {
                 'Authorization': `Bearer ${user?.accessToken}`
             },
             body: JSON.stringify({
+                agricultor: {
+                    id: agricultor?.id,
+                },
                 categoria,
                 classificacao,
                 descricao,

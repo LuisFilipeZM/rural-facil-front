@@ -134,7 +134,7 @@ export function DadosAgricultor() {
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">CAF</label>
-                                <input type="text" className="form-control" value={caf} onChange={e => setCaf(e.target.value)} />
+                                <input type="number" className="form-control" value={caf} onChange={e => setCaf(e.target.value)} />
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">CPF</label>
@@ -151,11 +151,11 @@ export function DadosAgricultor() {
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">Incrição estadual</label>
-                                <input type="text" className="form-control" value={inscricaoEstadual} onChange={e => setInscricaoEstadual(e.target.value)} />
+                                <input type="number" className="form-control" value={inscricaoEstadual} onChange={e => setInscricaoEstadual(e.target.value)} />
                             </div>
                             <div className="mb-3">
                                 <label className="form-label">WhatsApp / Celular</label>
-                                <input type="text" className="form-control" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} />
+                                <input type="number" className="form-control" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} />
                             </div>
                             <button type="submit" className="btn btn-success">Salvar dados</button>
                         </form>
