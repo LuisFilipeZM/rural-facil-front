@@ -6,10 +6,10 @@ import { Login } from "../screens/login";
 import { CadastroCliente } from "../screens/cadastroCliente";
 import { DadosCliente } from "../screens/dadosCliente";
 import { Mercado } from "../screens/mercado";
-import { DetalheProduto } from "../screens/detealheProduto";
 import { CadastroAgricultor } from "../screens/cadastroAgricultor";
 import { DadosAgricultor } from "../screens/dadosAgricultor";
 import { CadastroAnuncio } from "../screens/cadastroAnuncio";
+import { ListaAnuncio } from "../screens/listaAnuncio";
 
 export function Router() {
     const navigate = useNavigate();
@@ -31,9 +31,9 @@ export function Router() {
                 <Route path="/dados-cliente" element={<DadosCliente />} />
                 <Route path="/dados-agricultor" element={<DadosAgricultor />} />
                 <Route path="/mercado" element={<Mercado />} />
-                <Route path="/produto" element={<DetalheProduto />} />
                 <Route path="/cadastro-anuncio" element={<CadastroAnuncio />} />
                 <Route path="/cadastro-agricultor" element={<CadastroAgricultor/>} />
+                <Route path="/lista-anuncio" element={<ListaAnuncio/>} />
             </Route>
         </Routes>
     );

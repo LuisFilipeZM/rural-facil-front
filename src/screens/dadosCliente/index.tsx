@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Row, Col } from "react-bootstrap";
+import InputMask from 'react-input-mask';
 import './styles.css';
 
 export function DadosCliente() {
@@ -36,7 +37,6 @@ export function DadosCliente() {
 
     async function submitForm(event: React.FormEvent) {
         event.preventDefault();
-        //@ts-ignore
         if (!user && !user?.accessToken) {
             console.error('User ID is undefined');
             return;
@@ -46,19 +46,17 @@ export function DadosCliente() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                //@ts-ignore
                 'Authorization': `Bearer ${user?.accessToken}`
             },
             body: JSON.stringify({
                 acessoPessoa: {
-                    //@ts-ignore
                     login: user?.username,
                 },
-                cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
+                cpf: cpf.replace(/\D/g, ''),
                 dataNascimento: new Date(dataNascimento).toISOString(),
                 endereco,
                 nome,
-                whatsApp
+                whatsApp: "55" + whatsApp.replace(/\D/g, ''),
             })
         });
 
@@ -130,8 +128,13 @@ export function DadosCliente() {
                                 </Button>
                             </div>
                             <div className="mb-3">
-                                <label className="form-label">WhatsApp</label>
-                                <input type="text" className="form-control" id="whatsapp" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} required />
+                                <label className="form-label">WhatsApp / Celular</label>
+                                <InputMask
+                                    mask="(99) 99999-9999"
+                                    className="form-control"
+                                    value={whatsApp}
+                                    onChange={e => setWhatsApp(e.target.value)}
+                                />
                             </div>
                             <button type="submit" className="btn btn-success">Salvar dados</button>
                         </form>
@@ -140,7 +143,7 @@ export function DadosCliente() {
             </div>
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{endereco.logradouro ? 'Alterar Endereço' : 'Adicionar Endereço'}</Modal.Title> 
+                    <Modal.Title>{endereco.logradouro ? 'Alterar Endereço' : 'Adicionar Endereço'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form>
@@ -148,26 +151,26 @@ export function DadosCliente() {
                             <Col>
                                 <div className="mb-3">
                                     <label htmlFor="logradouro" className="form-label">Logradouro</label>
-                                    <input type="text" className="form-control" id="logradouro" placeholder="R. Jacinto Machado" value={endereco.logradouro} onChange={e => setEndereco({...endereco, logradouro: e.target.value})} required />
+                                    <input type="text" className="form-control" id="logradouro" placeholder="R. Jacinto Machado" value={endereco.logradouro} onChange={e => setEndereco({ ...endereco, logradouro: e.target.value })} required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="numero" className="form-label">Número</label>
                                     <input type="number" className="form-control" id="numero" placeholder="123" value={endereco.numero} onChange={e => {
                                         const value = parseInt(e.target.value);
                                         if (value >= 0) {
-                                            setEndereco({...endereco, numero: String(value)});
+                                            setEndereco({ ...endereco, numero: String(value) });
                                         }
                                     }} required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="complemento" className="form-label">Complemento</label>
-                                    <input type="text" className="form-control" id="complemento" placeholder="Apto. sol nascente" value={endereco.complemento} onChange={e => setEndereco({...endereco, complemento: e.target.value})} required />
+                                    <input type="text" className="form-control" id="complemento" placeholder="Apto. sol nascente" value={endereco.complemento} onChange={e => setEndereco({ ...endereco, complemento: e.target.value })} required />
                                 </div>
                             </Col>
                             <Col>
-                            <div className="mb-3">
+                                <div className="mb-3">
                                     <label htmlFor="municipio" className="form-label">Município</label>
-                                    <select className="form-select" id="municipio" value={endereco.municipio} onChange={e => setEndereco({...endereco, municipio: e.target.value})} required>
+                                    <select className="form-select" id="municipio" value={endereco.municipio} onChange={e => setEndereco({ ...endereco, municipio: e.target.value })} required>
                                         <option value="">Selecione o município</option>
                                         <option value="Araranguá">Araranguá</option>
                                         <option value="Criciúma">Criciúma</option>
@@ -189,11 +192,11 @@ export function DadosCliente() {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="cep" className="form-label">CEP</label>
-                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" maxLength={8} onChange={e => setEndereco({...endereco, cep: e.target.value})} required />
+                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" maxLength={8} onChange={e => setEndereco({ ...endereco, cep: e.target.value })} required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="bairro" className="form-label">Bairro</label>
-                                    <input type="text" className="form-control" id="bairro" value={endereco.bairro} placeholder="Centro" onChange={e => setEndereco({...endereco, bairro: e.target.value})} required />
+                                    <input type="text" className="form-control" id="bairro" value={endereco.bairro} placeholder="Centro" onChange={e => setEndereco({ ...endereco, bairro: e.target.value })} required />
                                 </div>
                             </Col>
                         </Row>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal, Button, Row, Col } from "react-bootstrap";
+import InputMask from 'react-input-mask';
 import './styles.css';
 
 export function DadosAgricultor() {
@@ -23,6 +24,8 @@ export function DadosAgricultor() {
     const [organico, setOrganico] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [apiResponse, setApiResponse] = useState(null);
+    const [editando, setEditando] = useState(false);
+    const [agricultor, setAgricultor] = useState(null);
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
@@ -46,6 +49,7 @@ export function DadosAgricultor() {
             return;
         }
 
+        if (!editando) {
         const response = await fetch(`http://localhost:8080/api/agricultor`, {
             method: 'POST',
             headers: {
@@ -66,9 +70,34 @@ export function DadosAgricultor() {
                 inscricaoEstadual,
                 nome,
                 organico,
-                whatsApp
+                whatsApp: "55" + whatsApp.replace(/\D/g, ''), // Remove a formatação do WhatsApp
             })
         });
+        }else {
+            const response = await fetch(`http://localhost:8080/api/agricultor/${agricultor?.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                //@ts-ignore
+                'Authorization': `Bearer ${user?.accessToken}`
+            },
+            body: JSON.stringify({
+                acessoPessoa: {
+                    //@ts-ignore
+                    login: user?.username,
+                },
+                ativo,
+                caf,
+                cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
+                dataNascimento: new Date(dataNascimento).toISOString(),
+                endereco,
+                inscricaoEstadual,
+                nome,
+                organico,
+                whatsApp: "55" + whatsApp.replace(/\D/g, ''), // Remove a formatação do WhatsApp
+            })
+        });
+        }
 
         const data = await response.json();
         setApiResponse(data.erro);
@@ -111,6 +140,12 @@ export function DadosAgricultor() {
             setDataNascimento(new Date(data.dataNascimento[0], data.dataNascimento[1] - 1, data.dataNascimento[2]).toISOString().split('T')[0]);
             setWhatsApp(data.whatsApp);
             setEndereco(data.endereco);
+
+            if (data.id) {
+                setEditando(true);
+            } else {
+                setEditando(false);
+            }
         } catch (error) {
             console.error('Error fetching client data:', error);
         }
@@ -153,11 +188,16 @@ export function DadosAgricultor() {
                                 <label className="form-label">Incrição estadual</label>
                                 <input type="number" className="form-control" value={inscricaoEstadual} onChange={e => setInscricaoEstadual(e.target.value)} />
                             </div>
-                            <div className="mb-3">
-                                <label className="form-label">WhatsApp / Celular</label>
-                                <input type="number" className="form-control" value={whatsApp} onChange={e => setWhatsApp(e.target.value)} />
-                            </div>
-                            <button type="submit" className="btn btn-success">Salvar dados</button>
+                                <div className="mb-3">
+                                    <label className="form-label">WhatsApp / Celular</label>
+                                    <InputMask
+                                        mask="(99) 99999-9999"
+                                        className="form-control"
+                                        value={whatsApp}
+                                        onChange={e => setWhatsApp(e.target.value)}
+                                    />
+                                </div>
+                            <button type="submit" className="btn btn-success">{!editando ? "Salvar dados" : "Editar dados"}</button>
                         </form>
                     </div>
                 </div>
@@ -233,7 +273,7 @@ export function DadosAgricultor() {
                         <Modal.Title>Algo deu errado!</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+                        <pre>{apiResponse}</pre>
                     </Modal.Body>
                 </Modal>
             )}

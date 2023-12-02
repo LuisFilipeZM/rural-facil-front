@@ -37,7 +37,6 @@ export function Header() {
             <div className="container-fluid d-flex justify-content-around">
                 <div>
                     <Link to="/" className="navbar-brand m-2">Inicio</Link>
-                    <Link to="/" className="navbar-brand m-2">Sobre</Link>
                     <Link to="/mercado" className="navbar-brand m-2">Mercado</Link>
                 </div>
                 <div>
@@ -55,6 +54,7 @@ export function Header() {
                             )}
                             <a href="/" onClick={logout} style={{ color: 'red', textDecoration: 'none' }}>
                                 <FaSignOutAlt style={{ verticalAlign: 'middle', marginLeft: '0.5rem' }} />
+                                Sair
                             </a>
                         </>
 

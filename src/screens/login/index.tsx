@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Modal, Button } from 'react-bootstrap';
 import logoHome from '../../assets/logo-home.svg'
@@ -13,6 +13,16 @@ export function Login() {
     const [showModal, setShowModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const storedUsername = localStorage.getItem('username');
+        const storedPassword = localStorage.getItem('password');
+        if (storedUsername && storedPassword) {
+            setUsername(storedUsername);
+            setPassword(storedPassword);
+            setRememberMe(true);
+        }
+    }, []);
 
     async function submitForm(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -40,6 +50,13 @@ export function Login() {
             }, 2000);
         } else {
             setShowModal(true);
+        }
+        if (rememberMe) {
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+        } else {
+            localStorage.removeItem('username');
+            localStorage.removeItem('password');
         }
     }
     
