@@ -82,10 +82,23 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
+  border-radius: 70px;
+}
+
+#listaAnuncio {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
   border-radius: 90px;
 }
 
 #novoAnuncio:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+  scale: 1.2;
+}
+
+#listaAnuncio:hover {
   background-color: #218838;
   border-color: #1e7e34;
   scale: 1.2;

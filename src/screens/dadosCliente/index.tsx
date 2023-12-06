@@ -19,7 +19,7 @@ export function DadosCliente() {
     const [nome, setNome] = useState('');
     const [whatsApp, setWhatsApp] = useState('');
     const [showModal, setShowModal] = useState(false);
-    const [apiResponse, setApiResponse] = useState(null);
+    const [apiResponse, setApiResponse] = useState('');
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
@@ -61,7 +61,11 @@ export function DadosCliente() {
         });
 
         const data = await response.json();
-        setApiResponse(data);
+        if(response.ok) {
+        setApiResponse("Dados salvos com sucesso!");
+        } else {
+            setApiResponse(data.erro);
+        }
     }
 
     function formatCPF(value: string) {
@@ -212,12 +216,12 @@ export function DadosCliente() {
                 </Modal.Footer>
             </Modal>
             {apiResponse && (
-                <Modal show={apiResponse !== null} onHide={() => setApiResponse(null)}>
+                <Modal show={apiResponse !== null} onHide={() => setApiResponse('')}>
                     <Modal.Header closeButton>
-                        <Modal.Title>API Response</Modal.Title>
+                        <Modal.Title>Atenção!</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+                        <pre>{apiResponse}</pre>
                     </Modal.Body>
                 </Modal>
             )}

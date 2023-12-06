@@ -1,0 +1,54 @@
+
+.container-fluid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .card-login {
+      height: 750px;
+  
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .btn-success {
+    background-color: green;
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: darkgreen;
+  }
+  
+  .modal-header {
+    background-color: lightgray;
+  }
+  
+  .modal-footer {
+    background-color: lightgray;
+  }
+  
+  .modal-title {
+    font-weight: bold;
+  }
+  
+  .modal-body {
+    font-weight: bold;
+  }
+  
+  .modal-footer a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .modal-footer a:hover {
+    text-decoration: underline;
+  }
+  

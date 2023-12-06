@@ -58,7 +58,7 @@ export function CadastroCliente() {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Senha</label>
-                                <input type="password" className="form-control" id="exampleInputPassword1" value={password} onChange={e => setPassword(e.target.value)}  />
+                                <input type="password" className="form-control" id="exampleInputPassword1" value={password} onChange={e => setPassword(e.target.value)} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword2" className="form-label">Repita sua senha</label>

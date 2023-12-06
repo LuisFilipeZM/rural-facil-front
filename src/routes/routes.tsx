@@ -10,6 +10,7 @@ import { CadastroAgricultor } from "../screens/cadastroAgricultor";
 import { DadosAgricultor } from "../screens/dadosAgricultor";
 import { CadastroAnuncio } from "../screens/cadastroAnuncio";
 import { ListaAnuncio } from "../screens/listaAnuncio";
+import { EditarAnuncio } from "../screens/editarAnuncio";
 
 export function Router() {
     const navigate = useNavigate();
@@ -34,6 +35,7 @@ export function Router() {
                 <Route path="/cadastro-anuncio" element={<CadastroAnuncio />} />
                 <Route path="/cadastro-agricultor" element={<CadastroAgricultor/>} />
                 <Route path="/lista-anuncio" element={<ListaAnuncio/>} />
+                <Route path="/editar-anuncio/:id" element={<EditarAnuncio/>} />
             </Route>
         </Routes>
     );

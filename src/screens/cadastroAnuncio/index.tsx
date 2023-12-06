@@ -58,7 +58,7 @@ export function CadastroAnuncio() {
                 organico,
                 produto: {
                     nomeProduto: nomeProduto,
-                }         ,     
+                },
                 sazonalidades,
                 valor,
                 foto1,
@@ -94,19 +94,19 @@ export function CadastroAnuncio() {
                         <form>
                             <div className="mb-3">
                                 <label htmlFor="name" className="form-label">Titulo:</label>
-                                <input type="text" className="form-control" id="name" value={nomeProduto} onChange={e => setNomeProduto(e.target.value)} />
+                                <input type="text" className="form-control" id="name" value={nomeProduto} onChange={e => setNomeProduto(e.target.value)} required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="price" className="form-label">Preço:</label>
-                                <input type="number" className="form-control" id="price" value={valor} onChange={e => setValor(Number(e.target.value))} />
+                                <input type="number" className="form-control" id="price" value={valor} onChange={e => setValor(Number(e.target.value))} required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="description" className="form-label">Descrição:</label>
-                                <input type="text" className="form-control" id="description" value={descricao} onChange={e => setDescricao(e.target.value)} />
+                                <input type="text" className="form-control" id="description" value={descricao} onChange={e => setDescricao(e.target.value)} required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="categoria" className="form-label">Categoria:</label>
-                                <select className="form-control" id="categoria" value={categoria} onChange={e => setCategoria(e.target.value)}>
+                                <select className="form-control" id="categoria" value={categoria} onChange={e => setCategoria(e.target.value)} required>
                                     <option value="">Selecionar categoria</option>
                                     <option value="MUDAS_SEMENTES">MUDAS/SEMENTES</option>
                                     <option value="HORTALICAS">HORTALIÇAS</option>
@@ -125,7 +125,7 @@ export function CadastroAnuncio() {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="organico" className="form-label me-3">Orgânico:</label>
-                                <input type="checkbox" id="organico" style={{ transform: "scale(1.5)" }} checked={organico} onChange={e => setOrganico(e.target.checked)} />
+                                <input type="checkbox" id="organico" style={{ transform: "scale(1.5)" }} checked={organico} onChange={e => setOrganico(e.target.checked)} required />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="mes" className="form-label">Sazionalidade:</label>
@@ -192,11 +192,12 @@ export function CadastroAnuncio() {
                                     id="images"
                                     multiple
                                     accept=".jpg, .jpeg, .png"
-                                    min="1"
-                                    max="5"
                                     onChange={(e) => {
                                         const selectedImages = Array.from(e.target.files);
-                                        const imagePromises = selectedImages.map((image) => {
+                                        const maxImages = 5;
+                                        const limitedImages = selectedImages.slice(0, maxImages); // Limita a seleção a 5 imagens
+
+                                        const imagePromises = limitedImages.map((image) => {
                                             return new Promise((resolve, reject) => {
                                                 const reader = new FileReader();
                                                 reader.onload = () => {
@@ -209,6 +210,7 @@ export function CadastroAnuncio() {
                                         });
 
                                         Promise.all(imagePromises).then((base64Images) => {
+                                            // Atualiza os estados com as imagens selecionadas, limitando a um máximo de 5
                                             setFoto1(base64Images[0] || '');
                                             setFoto2(base64Images[1] || '');
                                             setFoto3(base64Images[2] || '');
@@ -238,10 +240,10 @@ export function CadastroAnuncio() {
                 <Modal.Header closeButton>
                     <Modal.Title>Erro ao cadastrar o produto!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body></Modal.Body>
+                <Modal.Body>Algo de errado aconteceu, favor tente novamente!</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setErrorModal(false)}>
-                        <Link to="/lista-anuncio">Fechar</Link>
+                        Fechar
                     </Button>
                 </Modal.Footer>
             </Modal>

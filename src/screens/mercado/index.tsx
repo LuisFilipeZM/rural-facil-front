@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Carousel } from 'react-bootstrap';
 import './style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faClapperboard, faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import whatsappImage from '../../assets/whastapp.png';
 
@@ -12,7 +12,7 @@ interface Product {
     };
     descricao: string;
     organico: boolean;
-    sazonalidade: [string];
+    sazonalidades: string[];
     valor: number;
     image: string;
     agricultor: {
@@ -33,11 +33,21 @@ export function Mercado() {
     const [products, setProducts] = useState<Product[]>([]);
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const formattedWhatsApp = selectedProduct?.agricultor.whatsApp.replace(/^55(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    const [filtroAgricultor, setFiltroAgricultor] = useState('');
+    const [filtroCategoria, setFiltroCategoria] = useState('');
+    const [filtroPreco, setFiltroPreco] = useState(0);
+    const [filtroSazonalidade, setFiltroSazonalidade] = useState([]);
+    const [filtroOrganico, setFiltroOrganico] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 6;
+    const productsPerPage = 8;
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    const paginate = (pageNumber: number) => {
+        setCurrentPage(pageNumber);
+    };
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -63,6 +73,62 @@ export function Mercado() {
         }, 1000);
     }, []);
 
+    const aplicarFiltros = async () => {
+        try {
+            let url = 'http://localhost:8080/api/MarketPlace/api';
+
+            let hasParam = false;
+
+            if (filtroAgricultor !== '') {
+                url += `?agricultor=${filtroAgricultor}`;
+                hasParam = true;
+            }
+            if (filtroCategoria !== '') {
+                if (hasParam) {
+                    url += `&categoria=${filtroCategoria}`;
+                } else {
+                    url += `?categoria=${filtroCategoria}`;
+                    hasParam = true;
+                }
+            }
+            if (filtroPreco > 0) {
+                if (hasParam) {
+                    url += `&valor=${filtroPreco}`;
+                } else {
+                    url += `?valor=${filtroPreco}`;
+                    hasParam = true;
+                }
+            }
+            if (filtroSazonalidade.length > 0) {
+                const sazonalidadeQuery = filtroSazonalidade.map(mes => `sazonalidade=${mes}`).join('&');
+                if (hasParam) {
+                    url += `&${sazonalidadeQuery}`;
+                } else {
+                    url += `?${sazonalidadeQuery}`;
+                    hasParam = true;
+                }
+            }
+            if (filtroOrganico) {
+                if (hasParam) {
+                    url += '&organico=true';
+                } else {
+                    url += '?organico=true';
+                }
+            }
+
+            const response = await fetch(url, {
+                headers: {
+                    Authorization: `Bearer ${user?.accessToken}`,
+                }
+            });
+
+            const data = await response.json();
+            setProducts(data);
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     const handleProductClick = (product: Product) => {
         const arrayFotos = [];
         if (product.foto1) arrayFotos.push(product.foto1);
@@ -82,6 +148,15 @@ export function Mercado() {
     const closeModal = () => {
         setSelectedProduct(null);
         setShowModal(false);
+    };
+
+    const handleSazonalidadeChange = (event) => {
+        const { value, checked } = event.target;
+        if (checked) {
+            setFiltroSazonalidade([...filtroSazonalidade, value]);
+        } else {
+            setFiltroSazonalidade(filtroSazonalidade.filter(mes => mes !== value));
+        }
     };
 
     return (
@@ -112,16 +187,16 @@ export function Mercado() {
             {!loading && (
                 <div className="row">
                     <div className="col-md-3">
-                        <div className="card-filtro">
-                            <div className="card-body">
+                        <div className="card-filtro sticky-top">
+                            <div className="card-body" style={{ width: "300px" }}>
                                 <h5 className="card-title mb-3">Filtros</h5>
                                 <div className="form-group">
                                     <label htmlFor="texto">Agricultor:</label>
-                                    <input type="text" className="form-control" id="texto" />
+                                    <input type="text" className="form-control" id="texto" onChange={(e) => setFiltroAgricultor(e.target.value)} />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="categoria">Categoria:</label>
-                                    <select className="form-control" id="categoria">
+                                    <select className="form-control" id="categoria" onChange={(e) => setFiltroCategoria(e.target.value)}>
                                         <option value="">Todos</option>
                                         <option value="MUDAS_SEMENTES">Mudas/Sementes</option>
                                         <option value="HORTALICAS">Hortaliças</option>
@@ -140,91 +215,104 @@ export function Mercado() {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="preco">Preço:</label>
-                                    <input type="number" className="form-control" id="preco" />
+                                    <input type="number" className="form-control" onChange={(e) => setFiltroPreco(parseFloat(e.target.value))} step="0.01" />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="mes">Sazonalidade:</label>
                                     <div className="row">
                                         <div className="col-md-6">
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="janeiro" />
+                                                <input type="checkbox" className="form-check-input" value="JANEIRO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('JANEIRO')} />
                                                 <label className="form-check-label" htmlFor="janeiro">Janeiro</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="fevereiro" />
+                                                <input type="checkbox" className="form-check-input" value="FEVEREIRO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('FEVEREIRO')} />
                                                 <label className="form-check-label" htmlFor="fevereiro">Fevereiro</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="marco" />
+                                                <input type="checkbox" className="form-check-input" value="MARCO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('MARCO')} />
                                                 <label className="form-check-label" htmlFor="marco">Março</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="abril" />
+                                                <input type="checkbox" className="form-check-input" value="ABRIL" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('ABRIL')} />
                                                 <label className="form-check-label" htmlFor="abril">Abril</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="maio" />
+                                                <input type="checkbox" className="form-check-input" value="MAIO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('MAIO')} />
                                                 <label className="form-check-label" htmlFor="maio">Maio</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="junho" />
+                                                <input type="checkbox" className="form-check-input" value="JUNHO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('JUNHO')} />
                                                 <label className="form-check-label" htmlFor="junho">Junho</label>
                                             </div>
                                         </div>
                                         <div className="col-md-6">
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="julho" />
+                                                <input type="checkbox" className="form-check-input" value="JULHO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('JULHO')} />
                                                 <label className="form-check-label" htmlFor="julho">Julho</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="agosto" />
+                                                <input type="checkbox" className="form-check-input" value="AGOSTO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('AGOSTO')} />
                                                 <label className="form-check-label" htmlFor="agosto">Agosto</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="setembro" />
+                                                <input type="checkbox" className="form-check-input" value="SETEMBRO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('SETEMBRO')} />
                                                 <label className="form-check-label" htmlFor="setembro">Setembro</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="outubro" />
+                                                <input type="checkbox" className="form-check-input" value="OUTUBRO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('OUTUBRO')} />
                                                 <label className="form-check-label" htmlFor="outubro">Outubro</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="novembro" />
+                                                <input type="checkbox" className="form-check-input" value="NOVEMBRO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('NOVEMBRO')} />
                                                 <label className="form-check-label" htmlFor="novembro">Novembro</label>
                                             </div>
                                             <div className="form-check">
-                                                <input type="checkbox" className="form-check-input" id="dezembro" />
+                                                <input type="checkbox" className="form-check-input" value="DEZEMBRO" onChange={handleSazonalidadeChange} checked={filtroSazonalidade.includes('DEZEMBRO')} />
                                                 <label className="form-check-label" htmlFor="dezembro">Dezembro</label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <input type="checkbox" id="organico" />
+                                    <input type="checkbox" id="organico" onChange={(e) => setFiltroOrganico(e.target.checked)} />
                                     <label className='ms-1 mt-2' htmlFor="organico">Orgânico</label>
                                 </div>
                                 <div className="form-group">
-                                    <button className="btn btn-success mt-3">Filtrar</button>
+                                    <button className="btn btn-success mt-3" onClick={aplicarFiltros}>Filtrar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-9">
+                    <div className="col-md-9" style={{ width: "970px" }}>
                         <div className="row">
-                            {products.map((product, index) => (
-                                <div className="col-md-6 mb-4" key={index}>
-                                    <div className="card" onClick={() => handleProductClick(product)}>
-                                        <img src={product.foto1} className="card-img-top" alt="Imagem do produto" />
-                                        <div className="card-body">
-                                            <h5 className="card-title">R$ {product.valor.toFixed(2)}</h5>
-                                            <p className="card-text">{product.produto.nomeProduto}</p>
-                                            <p className="card-text text-right">Anunciado por: {product.agricultor.nome}</p>
+                            {currentProducts.length > 0 ? (
+                                currentProducts.map((product, index) => (
+                                    <div className="col-md-6 mb-4" key={index}>
+                                        <div className="card" onClick={() => handleProductClick(product)}>
+                                            <img src={product.foto1} className="card-img-top" alt="Imagem do produto" />
+                                            <div className="card-body">
+                                                <h5 className="card-title">R$ {product.valor.toFixed(2)}</h5>
+                                                <p className="card-text">{product.produto.nomeProduto}</p>
+                                                <p className="card-text text-right">Anunciado por: {product.agricultor.nome}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <div>Não há produtos disponíveis.</div>
+                            )}
+                        </div>
+                        <div className='mb-5' style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <button className='btn btn-secondary' onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1}>
+                                Anterior
+                            </button>
+                            <button className='btn btn-success' onClick={() => paginate(currentPage + 1)} disabled={currentProducts.length < productsPerPage}>
+                                Próxima
+                            </button>
                         </div>
                     </div>
+
                 </div>
             )}
             <Modal show={showModal} onHide={closeModal} size='lg' centered>
@@ -241,6 +329,7 @@ export function Mercado() {
                     </Carousel>
                     <p>{selectedProduct?.descricao}</p>
                     <p>R$ {selectedProduct?.valor.toFixed(2)}</p>
+                    <p>Sazonalidade(s): {selectedProduct?.sazonalidades.join(', ')}</p>
                     <p>Anunciado por: {selectedProduct?.agricultor.nome}</p>
                     <p>Telefone/WhatsApp: {formattedWhatsApp}</p>
                     <div className="form-group">
@@ -257,13 +346,19 @@ export function Mercado() {
                 </Modal.Footer>
             </Modal>
             {user.roles[0] === 'Agricultor' && (
-                <Link to="/cadastro-anuncio">
-                    <button className="btn btn-primary btn-floating btn-lg" id="novoAnuncio" title="Novo Anuncio">
-                        <FontAwesomeIcon icon={faPlus} />
-                    </button>
-                </Link>
+                <div>
+                    <Link to="/cadastro-anuncio">
+                        <button className="btn btn-primary btn-floating btn-lg" id="novoAnuncio" title="Novo Anuncio">
+                            <FontAwesomeIcon icon={faPlus} />
+                        </button>
+                    </Link>
+                    <Link to="/lista-anuncio">
+                        <button className="btn btn-primary btn-floating btn-lg" id="listaAnuncio" title="Another Button">
+                            <FontAwesomeIcon icon={faClipboard} />
+                        </button>
+                    </Link>
+                </div>
             )}
         </div>
     );
 }
-

@@ -74,7 +74,7 @@ export function DadosAgricultor() {
             })
         });
         }else {
-            const response = await fetch(`http://localhost:8080/api/agricultor/${agricultor?.id}`, {
+            const response = await fetch(`http://localhost:8080/api/agricultor/${user.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -140,6 +140,7 @@ export function DadosAgricultor() {
             setDataNascimento(new Date(data.dataNascimento[0], data.dataNascimento[1] - 1, data.dataNascimento[2]).toISOString().split('T')[0]);
             setWhatsApp(data.whatsApp);
             setEndereco(data.endereco);
+            setAgricultor(data);
 
             if (data.id) {
                 setEditando(true);

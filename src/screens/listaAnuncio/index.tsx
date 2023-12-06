@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { DadosAgricultor } from '../dadosAgricultor/index';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Anuncio {
     id: number,
@@ -12,6 +12,7 @@ interface Anuncio {
 
 export function ListaAnuncio() {
     const [anuncios, setAnuncios] = useState<Anuncio[]>([]);
+    const navigate = useNavigate();
     const [agricultor, setAgricultor] = useState(null);
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     
@@ -46,33 +47,34 @@ export function ListaAnuncio() {
 
 
     return (
-        <div className="card mx-auto card-no-hover">
-            <div className="card-body">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th className="text-center">ID</th>
-                            <th className="text-center">Status</th>
-                            <th className="text-center">Título</th>
-                            <th className="text-center">Valor</th>
-                            <th className="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {anuncios.map((anuncio) => (
+        <div className="table-responsive mx-auto mt-3" style={{ maxWidth: "100vh" }}>
+            <h5 className="text-center"><strong>Meus Anúncios</strong></h5>
+            <table className="table">
+                <thead>
+                    <tr>
+                        <th className="text-center">ID</th>
+                        <th className="text-center">Status</th>
+                        <th className="text-center">Título</th>
+                        <th className="text-center">Valor</th>
+                        <th className="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {anuncios
+                        .filter((anuncio) => anuncio.agricultor.acessoPessoa.id === user.id)
+                        .map((anuncio) => (
                             <tr key={anuncio.id}>
                                 <td className="text-center">{anuncio.id}</td>
                                 <td className="text-center">{anuncio.ativo ? 'Ativo' : 'Inativo'}</td>
                                 <td className="text-center">{anuncio.produto.nomeProduto}</td>
                                 <td className="text-center">{anuncio.valor}</td>
                                 <td className="text-center">
-                                    <button className="btn btn-primary">Editar</button>
+                                    <button className="btn btn-primary" onClick={() => navigate(`/editar-anuncio/${anuncio.id}`)}>Editar</button>
                                 </td>
                             </tr>
                         ))}
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
     );
 }
