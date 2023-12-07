@@ -32,16 +32,21 @@ export function ListaAnuncio() {
 
     useEffect(() => {
         fetchData();
-        fetch('http://localhost:8080/api/AnuncioAgricultor/api', {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user?.accessToken}`
-            }
-        })
+    }, []); // Chamada inicial para buscar o agricultor
+
+    useEffect(() => {
+        if (agricultor?.id) {
+            fetch(`http://localhost:8080/api/AnuncioAgricultor/api?agricultor=${agricultor.id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.accessToken}`
+                }
+            })
             .then(response => response.json())
             .then(data => setAnuncios(data))
             .catch(error => console.error(error));
-    }, []);
+        }
+    }, [agricultor, user?.accessToken]);
 
     
 
@@ -60,19 +65,17 @@ export function ListaAnuncio() {
                     </tr>
                 </thead>
                 <tbody>
-                    {anuncios
-                        .filter((anuncio) => anuncio.agricultor.acessoPessoa.id === user.id)
-                        .map((anuncio) => (
-                            <tr key={anuncio.id}>
-                                <td className="text-center">{anuncio.id}</td>
-                                <td className="text-center">{anuncio.ativo ? 'Ativo' : 'Inativo'}</td>
-                                <td className="text-center">{anuncio.produto.nomeProduto}</td>
-                                <td className="text-center">{anuncio.valor}</td>
-                                <td className="text-center">
-                                    <button className="btn btn-primary" onClick={() => navigate(`/editar-anuncio/${anuncio.id}`)}>Editar</button>
-                                </td>
-                            </tr>
-                        ))}
+                    {anuncios.map((anuncio) => (
+                        <tr key={anuncio.id}>
+                            <td className="text-center">{anuncio.id}</td>
+                            <td className="text-center">{anuncio.ativo ? 'Ativo' : 'Inativo'}</td>
+                            <td className="text-center">{anuncio.produto.nomeProduto}</td>
+                            <td className="text-center">{anuncio.valor}</td>
+                            <td className="text-center">
+                                <button className="btn btn-primary" onClick={() => navigate(`/editar-anuncio/${anuncio.id}`)}>Editar</button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
         </div>

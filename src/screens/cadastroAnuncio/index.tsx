@@ -11,6 +11,7 @@ export function CadastroAnuncio() {
     const [nomeProduto, setNomeProduto] = useState('');
     const [sazonalidades, setSazonalidades] = useState<string[]>([]);
     const [valor, setValor] = useState(0);
+    const [ativo, setAtivo] = useState(true);
     const [showSuccessModal, setSuccessModal] = useState(false);
     const [showErrorModal, setErrorModal] = useState(false);
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -53,6 +54,7 @@ export function CadastroAnuncio() {
                     id: agricultor?.id,
                 },
                 categoria,
+                ativo,
                 classificacao,
                 descricao,
                 organico,

@@ -20,6 +20,8 @@ export function DadosCliente() {
     const [whatsApp, setWhatsApp] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [apiResponse, setApiResponse] = useState('');
+    const [clienteId, setClienteId] = useState(0);
+    const [editando, setEditando] = useState(false);
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
@@ -42,27 +44,47 @@ export function DadosCliente() {
             return;
         }
 
-        const response = await fetch(`http://localhost:8080/api/cliente`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${user?.accessToken}`
-            },
-            body: JSON.stringify({
-                acessoPessoa: {
-                    login: user?.username,
+        if (!editando) {
+            const response = await fetch(`http://localhost:8080/api/cliente`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.accessToken}`
                 },
-                cpf: cpf.replace(/\D/g, ''),
-                dataNascimento: new Date(dataNascimento).toISOString(),
-                endereco,
-                nome,
-                whatsApp: "55" + whatsApp.replace(/\D/g, ''),
-            })
-        });
+                body: JSON.stringify({
+                    acessoPessoa: {
+                        login: user?.username,
+                    },
+                    cpf: cpf.replace(/\D/g, ''),
+                    dataNascimento: new Date(dataNascimento).toISOString(),
+                    endereco,
+                    nome,
+                    whatsApp: "55" + whatsApp.replace(/\D/g, ''),
+                })
+            });
+        } else {
+            const response = await fetch(`http://localhost:8080/api/cliente/${clienteId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user?.accessToken}`
+                },
+                body: JSON.stringify({
+                    acessoPessoa: {
+                        login: user?.username,
+                    },
+                    cpf: cpf.replace(/\D/g, ''),
+                    dataNascimento: new Date(dataNascimento).toISOString(),
+                    endereco,
+                    nome,
+                    whatsApp: "55" + whatsApp.replace(/\D/g, ''),
+                })
+            });
+        }
 
         const data = await response.json();
-        if(response.ok) {
-        setApiResponse("Dados salvos com sucesso!");
+        if (response.ok) {
+            setApiResponse("Dados salvos com sucesso!");
         } else {
             setApiResponse(data.erro);
         }
@@ -102,6 +124,13 @@ export function DadosCliente() {
             setDataNascimento(new Date(data.dataNascimento[0], data.dataNascimento[1] - 1, data.dataNascimento[2]).toISOString().split('T')[0]);
             setWhatsApp(data.whatsApp);
             setEndereco(data.endereco);
+            setClienteId(data.id);
+
+            if (data.id) {
+                setEditando(true);
+            } else {
+                setEditando(false);
+            }
         } catch (error) {
             console.error('Error fetching client data:', error);
         }
@@ -140,7 +169,7 @@ export function DadosCliente() {
                                     onChange={e => setWhatsApp(e.target.value)}
                                 />
                             </div>
-                            <button type="submit" className="btn btn-success">Salvar dados</button>
+                            <button type="submit" className="btn btn-success">{!editando ? "Salvar dados" : "Editar dados"}</button>
                         </form>
                     </div>
                 </div>

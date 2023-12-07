@@ -23,9 +23,9 @@ export function DadosAgricultor() {
     const [whatsApp, setWhatsApp] = useState('');
     const [organico, setOrganico] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [apiResponse, setApiResponse] = useState(null);
     const [editando, setEditando] = useState(false);
     const [agricultor, setAgricultor] = useState(null);
+    const [apiResponse, setApiResponse] = useState('');
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
@@ -50,57 +50,66 @@ export function DadosAgricultor() {
         }
 
         if (!editando) {
-        const response = await fetch(`http://localhost:8080/api/agricultor`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                //@ts-ignore
-                'Authorization': `Bearer ${user?.accessToken}`
-            },
-            body: JSON.stringify({
-                acessoPessoa: {
+            const response = await fetch(`http://localhost:8080/api/agricultor`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                     //@ts-ignore
-                    login: user?.username,
+                    'Authorization': `Bearer ${user?.accessToken}`
                 },
-                ativo,
-                caf,
-                cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
-                dataNascimento: new Date(dataNascimento).toISOString(),
-                endereco,
-                inscricaoEstadual,
-                nome,
-                organico,
-                whatsApp: "55" + whatsApp.replace(/\D/g, ''), // Remove a formatação do WhatsApp
-            })
-        });
-        }else {
-            const response = await fetch(`http://localhost:8080/api/agricultor/${user.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                //@ts-ignore
-                'Authorization': `Bearer ${user?.accessToken}`
-            },
-            body: JSON.stringify({
-                acessoPessoa: {
+                body: JSON.stringify({
+                    acessoPessoa: {
+                        //@ts-ignore
+                        login: user?.username,
+                    },
+                    ativo,
+                    caf,
+                    cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
+                    dataNascimento: new Date(dataNascimento).toISOString(),
+                    endereco,
+                    inscricaoEstadual,
+                    nome,
+                    organico,
+                    whatsApp: "55" + whatsApp.replace(/\D/g, ''), // Remove a formatação do WhatsApp
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setApiResponse("Dados salvos com sucesso!");
+            } else {
+                setApiResponse(data.erro);
+            }
+        } else {
+            const response = await fetch(`http://localhost:8080/api/agricultor/${agricultor?.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
                     //@ts-ignore
-                    login: user?.username,
+                    'Authorization': `Bearer ${user?.accessToken}`
                 },
-                ativo,
-                caf,
-                cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
-                dataNascimento: new Date(dataNascimento).toISOString(),
-                endereco,
-                inscricaoEstadual,
-                nome,
-                organico,
-                whatsApp: "55" + whatsApp.replace(/\D/g, ''), // Remove a formatação do WhatsApp
-            })
-        });
+                body: JSON.stringify({
+                    acessoPessoa: {
+                        //@ts-ignore
+                        login: user?.username,
+                    },
+                    ativo,
+                    caf,
+                    cpf: cpf.replace(/\D/g, ''), // Remove a formatação do CPF
+                    dataNascimento: new Date(dataNascimento).toISOString(),
+                    endereco,
+                    inscricaoEstadual,
+                    nome,
+                    organico,
+                    whatsApp: "55" + whatsApp.replace(/\D/g, ''), // Remove a formatação do WhatsApp
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setApiResponse("Dados salvos com sucesso!");
+            } else {
+                setApiResponse(data.erro);
+            }
         }
-
-        const data = await response.json();
-        setApiResponse(data.erro);
     }
 
     function formatCPF(value: string) {
@@ -178,7 +187,7 @@ export function DadosAgricultor() {
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="exampleInputPassword1" className="form-label">Data de nascimento</label>
-                                <input type="date" className="form-control" id="exampleInputPassword1" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)}  />
+                                <input type="date" className="form-control" id="exampleInputPassword1" value={dataNascimento} onChange={e => setDataNascimento(e.target.value)} />
                             </div>
                             <div className="mb-3">
                                 <Button variant="primary" onClick={handleShowModal}>
@@ -189,15 +198,15 @@ export function DadosAgricultor() {
                                 <label className="form-label">Incrição estadual</label>
                                 <input type="number" className="form-control" value={inscricaoEstadual} onChange={e => setInscricaoEstadual(e.target.value)} />
                             </div>
-                                <div className="mb-3">
-                                    <label className="form-label">WhatsApp / Celular</label>
-                                    <InputMask
-                                        mask="(99) 99999-9999"
-                                        className="form-control"
-                                        value={whatsApp}
-                                        onChange={e => setWhatsApp(e.target.value)}
-                                    />
-                                </div>
+                            <div className="mb-3">
+                                <label className="form-label">WhatsApp / Celular</label>
+                                <InputMask
+                                    mask="(99) 99999-9999"
+                                    className="form-control"
+                                    value={whatsApp}
+                                    onChange={e => setWhatsApp(e.target.value)}
+                                />
+                            </div>
                             <button type="submit" className="btn btn-success">{!editando ? "Salvar dados" : "Editar dados"}</button>
                         </form>
                     </div>
@@ -213,21 +222,21 @@ export function DadosAgricultor() {
                             <Col>
                                 <div className="mb-3">
                                     <label htmlFor="logradouro" className="form-label">Logradouro</label>
-                                    <input type="text" className="form-control" id="logradouro" placeholder="R. Jacinto Machado" value={endereco.logradouro} onChange={e => setEndereco({...endereco, logradouro: e.target.value})} />
+                                    <input type="text" className="form-control" id="logradouro" placeholder="R. Jacinto Machado" value={endereco.logradouro} onChange={e => setEndereco({ ...endereco, logradouro: e.target.value })} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="numero" className="form-label">Número</label>
-                                    <input type="number" className="form-control" id="numero" placeholder="123" value={endereco.numero} onChange={e => setEndereco({...endereco, numero: e.target.value})} />
+                                    <input type="number" className="form-control" id="numero" placeholder="123" value={endereco.numero} onChange={e => setEndereco({ ...endereco, numero: e.target.value })} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="complemento" className="form-label">Complemento</label>
-                                    <input type="text" className="form-control" id="complemento" placeholder="Apto. sol nascente" value={endereco.complemento} onChange={e => setEndereco({...endereco, complemento: e.target.value})} />
+                                    <input type="text" className="form-control" id="complemento" placeholder="Apto. sol nascente" value={endereco.complemento} onChange={e => setEndereco({ ...endereco, complemento: e.target.value })} />
                                 </div>
                             </Col>
                             <Col>
                                 <div className="mb-3">
                                     <label htmlFor="municipio" className="form-label">Município</label>
-                                    <select className="form-select" id="municipio" value={endereco.municipio} onChange={e => setEndereco({...endereco, municipio: e.target.value})}>
+                                    <select className="form-select" id="municipio" value={endereco.municipio} onChange={e => setEndereco({ ...endereco, municipio: e.target.value })}>
                                         <option value="">Selecione o município</option>
                                         <option value="Araranguá">Araranguá</option>
                                         <option value="Criciúma">Criciúma</option>
@@ -249,11 +258,11 @@ export function DadosAgricultor() {
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="cep" className="form-label">CEP</label>
-                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" onChange={e => setEndereco({...endereco, cep: e.target.value})} />
+                                    <input type="text" className="form-control" id="cep" value={endereco.cep} placeholder="88830-208" onChange={e => setEndereco({ ...endereco, cep: e.target.value })} />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="bairro" className="form-label">Bairro</label>
-                                    <input type="text" className="form-control" id="bairro" value={endereco.bairro} placeholder="Centro" onChange={e => setEndereco({...endereco, bairro: e.target.value})} />
+                                    <input type="text" className="form-control" id="bairro" value={endereco.bairro} placeholder="Centro" onChange={e => setEndereco({ ...endereco, bairro: e.target.value })} />
                                 </div>
                             </Col>
                         </Row>
@@ -269,9 +278,9 @@ export function DadosAgricultor() {
                 </Modal.Footer>
             </Modal>
             {apiResponse && (
-                <Modal show={apiResponse !== null} onHide={() => setApiResponse(null)}>
+                <Modal show={apiResponse !== null} onHide={() => setApiResponse('')}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Algo deu errado!</Modal.Title>
+                        <Modal.Title>Atenção!</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <pre>{apiResponse}</pre>
