@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Carousel } from 'react-bootstrap';
 import './style.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClapperboard, faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import whatsappImage from '../../assets/whastapp.png';
+import produtoOrganicoLogo from '../../assets/produto-organico-brasil-logo-3.png';
 
 interface Product {
     produto: {
@@ -33,9 +34,10 @@ export function Mercado() {
     const [products, setProducts] = useState<Product[]>([]);
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const formattedWhatsApp = selectedProduct?.agricultor.whatsApp.replace(/^55(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    const [filtroProduto, setFiltroProduto] = useState('');
     const [filtroAgricultor, setFiltroAgricultor] = useState('');
     const [filtroCategoria, setFiltroCategoria] = useState('');
-    const [filtroPreco, setFiltroPreco] = useState(0);
+    const [filtroPreco, setFiltroPreco] = useState('');
     const [filtroSazonalidade, setFiltroSazonalidade] = useState([]);
     const [filtroOrganico, setFiltroOrganico] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -43,6 +45,7 @@ export function Mercado() {
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+    
 
     const paginate = (pageNumber: number) => {
         setCurrentPage(pageNumber);
@@ -83,6 +86,14 @@ export function Mercado() {
                 url += `?agricultor=${filtroAgricultor}`;
                 hasParam = true;
             }
+            if (filtroProduto !== '') {
+                if (hasParam) {
+                    url += `&produtofilter=${filtroProduto}`;
+                } else {
+                    url += `?produtofilter=${filtroProduto}`;
+                    hasParam = true;
+                }
+            }
             if (filtroCategoria !== '') {
                 if (hasParam) {
                     url += `&categoria=${filtroCategoria}`;
@@ -91,7 +102,7 @@ export function Mercado() {
                     hasParam = true;
                 }
             }
-            if (filtroPreco > 0) {
+            if (filtroPreco !== '') {
                 if (hasParam) {
                     url += `&valor=${filtroPreco}`;
                 } else {
@@ -191,6 +202,10 @@ export function Mercado() {
                             <div className="card-body" style={{ width: "300px" }}>
                                 <h5 className="card-title mb-3">Filtros</h5>
                                 <div className="form-group">
+                                    <label htmlFor="texto">Produto:</label>
+                                    <input type="text" className="form-control" id="texto" onChange={(e) => setFiltroProduto(e.target.value)} />
+                                </div>
+                                <div className="form-group">
                                     <label htmlFor="texto">Agricultor:</label>
                                     <input type="text" className="form-control" id="texto" onChange={(e) => setFiltroAgricultor(e.target.value)} />
                                 </div>
@@ -215,7 +230,10 @@ export function Mercado() {
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="preco">Preço:</label>
-                                    <input type="number" className="form-control" onChange={(e) => setFiltroPreco(parseFloat(e.target.value))} step="0.01" />
+                                    <div className="btn-group m-2" role="group" aria-label="Preço">
+                                        <button type="button" className={`btn ${filtroPreco === 'ASC' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => setFiltroPreco('ASC')}>▲ Asc</button>
+                                        <button type="button" className={`btn ${filtroPreco === 'DESC' ? 'btn-secondary' : 'btn-outline-secondary'}`} onClick={() => setFiltroPreco('DESC')}>▼ Desc</button>
+                                    </div>
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="mes">Sazonalidade:</label>
@@ -279,7 +297,7 @@ export function Mercado() {
                                     <label className='ms-1 mt-2' htmlFor="organico">Orgânico</label>
                                 </div>
                                 <div className="form-group">
-                                    <button className="btn btn-success mt-3" onClick={aplicarFiltros}>Filtrar</button>
+                                    <button className="btn btn-success mt-3" onClick={aplicarFiltros}>Aplicar filtro</button>
                                 </div>
                             </div>
                         </div>
@@ -317,19 +335,25 @@ export function Mercado() {
             )}
             <Modal show={showModal} onHide={closeModal} size='lg' centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>{selectedProduct?.produto.nomeProduto}</Modal.Title>
+                    <Modal.Title>
+                        {selectedProduct?.produto.nomeProduto}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Carousel>
                         {selectedProduct?.image.map((image, index) => (
                             <Carousel.Item key={index}>
                                 <img src={image} style={{ width: 400 }} alt="..." />
+                                {selectedProduct?.organico && (
+                                    <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
+                                        <img src={produtoOrganicoLogo} style={{ width: 90, height: 60 }} alt="Orgânico" />
+                                    </div>
+                                )}
                             </Carousel.Item>
                         ))}
                     </Carousel>
                     <p>{selectedProduct?.descricao}</p>
                     <p>R$ {selectedProduct?.valor.toFixed(2)}</p>
-                    <p>Sazonalidade(s): {selectedProduct?.sazonalidades.join(', ')}</p>
                     <p>Anunciado por: {selectedProduct?.agricultor.nome}</p>
                     <p>Telefone/WhatsApp: {formattedWhatsApp}</p>
                     <div className="form-group">
@@ -348,12 +372,12 @@ export function Mercado() {
             {user.roles[0] === 'Agricultor' && (
                 <div>
                     <Link to="/cadastro-anuncio">
-                        <button className="btn btn-primary btn-floating btn-lg" id="novoAnuncio" title="Novo Anuncio">
+                        <button className="btn btn-primary btn-floating btn-lg" id="novoAnuncio" title="Novo Anúncio">
                             <FontAwesomeIcon icon={faPlus} />
                         </button>
                     </Link>
                     <Link to="/lista-anuncio">
-                        <button className="btn btn-primary btn-floating btn-lg" id="listaAnuncio" title="Another Button">
+                        <button className="btn btn-primary btn-floating btn-lg" id="listaAnuncio" title="Meus Anúncios">
                             <FontAwesomeIcon icon={faClipboard} />
                         </button>
                     </Link>

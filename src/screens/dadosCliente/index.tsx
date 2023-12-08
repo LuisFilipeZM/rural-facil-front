@@ -245,7 +245,7 @@ export function DadosCliente() {
                 </Modal.Footer>
             </Modal>
             {apiResponse && (
-                <Modal show={apiResponse !== null} onHide={() => setApiResponse('')}>
+                <Modal show={apiResponse !== null} onHide={() => setApiResponse('')} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Atenção!</Modal.Title>
                     </Modal.Header>

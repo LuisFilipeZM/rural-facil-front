@@ -43,7 +43,6 @@ export function DadosAgricultor() {
 
     async function submitForm(event: React.FormEvent) {
         event.preventDefault();
-        //@ts-ignore
         if (!user && !user?.accessToken) {
             console.error('User ID is undefined');
             return;
@@ -54,12 +53,10 @@ export function DadosAgricultor() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    //@ts-ignore
                     'Authorization': `Bearer ${user?.accessToken}`
                 },
                 body: JSON.stringify({
                     acessoPessoa: {
-                        //@ts-ignore
                         login: user?.username,
                     },
                     ativo,
@@ -84,12 +81,10 @@ export function DadosAgricultor() {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    //@ts-ignore
                     'Authorization': `Bearer ${user?.accessToken}`
                 },
                 body: JSON.stringify({
                     acessoPessoa: {
-                        //@ts-ignore
                         login: user?.username,
                     },
                     ativo,
@@ -278,7 +273,7 @@ export function DadosAgricultor() {
                 </Modal.Footer>
             </Modal>
             {apiResponse && (
-                <Modal show={apiResponse !== null} onHide={() => setApiResponse('')}>
+                <Modal show={apiResponse !== null} onHide={() => setApiResponse('')} centered>
                     <Modal.Header closeButton>
                         <Modal.Title>Atenção!</Modal.Title>
                     </Modal.Header>

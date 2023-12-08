@@ -118,7 +118,7 @@ export function EditarAnuncio() {
         <div className="container-fluid d-flex justify-content-center align-items-center">
             <div style={{ paddingLeft: 150, paddingRight: 150 }}>
                 <div className="d-flex justify-content-center align-items-center">
-                    <div className="card-login">
+                    <div className="card-login m-3">
                         <h1 className='text-center m-2'>Editar anúncio</h1>
                         <form>
                             <div className="mb-3 d-flex justify-content-center">

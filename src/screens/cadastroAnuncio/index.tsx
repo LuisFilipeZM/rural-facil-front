@@ -91,7 +91,7 @@ export function CadastroAnuncio() {
         <div className="container-fluid d-flex justify-content-center align-items-center">
             <div style={{ paddingLeft: 150, paddingRight: 150 }}>
                 <div className="d-flex justify-content-center align-items-center">
-                    <div className="card-login">
+                    <div className="card-login m-3">
                         <h1 className='text-center m-2'>Cadastro de Anúncio</h1>
                         <form>
                             <div className="mb-3">
@@ -220,6 +220,7 @@ export function CadastroAnuncio() {
                                             setFoto5(base64Images[4] || '');
                                         });
                                     }}
+                                required
                                 />
                             </div>
                             <button type="submit" className="btn btn-success btn-lg" onClick={submitForm}>Cadastrar</button>
