@@ -340,10 +340,10 @@ export function Mercado() {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Carousel>
+                    <Carousel slide={false}>
                         {selectedProduct?.image.map((image, index) => (
                             <Carousel.Item key={index}>
-                                <img src={image} style={{ width: 400 }} alt="..." />
+                                <img src={image} style={{ width: 500, height: 400 }} alt="..." />
                                 {selectedProduct?.organico && (
                                     <div style={{ position: 'absolute', bottom: 10, right: 10 }}>
                                         <img src={produtoOrganicoLogo} style={{ width: 90, height: 60 }} alt="Orgânico" />
@@ -353,7 +353,7 @@ export function Mercado() {
                         ))}
                     </Carousel>
                     <p>{selectedProduct?.descricao}</p>
-                    <p>R$ {selectedProduct?.valor.toFixed(2)}</p>
+                    <h2><strong>R$ {selectedProduct?.valor.toFixed(2)}</strong></h2>
                     <p>Anunciado por: {selectedProduct?.agricultor.nome}</p>
                     <p>Telefone/WhatsApp: {formattedWhatsApp}</p>
                     <div className="form-group">
