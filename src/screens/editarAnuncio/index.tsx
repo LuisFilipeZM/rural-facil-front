@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import { Link, useParams } from 'react-router-dom';
+import './style.css';
 
 export function EditarAnuncio() {
     const { id } = useParams();
@@ -11,6 +12,7 @@ export function EditarAnuncio() {
     const [organico, setOrganico] = useState(false);
     const [nomeProduto, setNomeProduto] = useState('');
     const [sazonalidades, setSazonalidades] = useState<string[]>([]);
+    const [ativo, setAtivo] = useState(null);
     const [valor, setValor] = useState(0);
     const [showSuccessModal, setSuccessModal] = useState(false);
     const [showErrorModal, setErrorModal] = useState(false);
@@ -34,7 +36,7 @@ export function EditarAnuncio() {
                 });
                 const data = await response.json();
                 setAnuncio(data);
-                // Preencha os estados com os dados do anúncio recebido
+                setAtivo(data.ativo);
                 setCategoria(data.categoria);
                 setClassificacao(data.classificacao);
                 setDescricao(data.descricao);
@@ -73,6 +75,7 @@ export function EditarAnuncio() {
                     },
                     categoria,
                     classificacao,
+                    ativo,
                     descricao,
                     organico,
                     produto: {
@@ -118,6 +121,11 @@ export function EditarAnuncio() {
                     <div className="card-login">
                         <h1 className='text-center m-2'>Editar anúncio</h1>
                         <form>
+                            <div className="mb-3 d-flex justify-content-center">
+                                <Button variant={ativo ? 'success' : 'secondary'} onClick={() => setAtivo(!ativo)}>
+                                    {ativo ? 'Ativo' : 'Inativo'}
+                                </Button>
+                            </div>
                             <div className="mb-3">
                                 <label htmlFor="name" className="form-label">Titulo:</label>
                                 <input type="text" className="form-control" id="name" value={nomeProduto} onChange={e => setNomeProduto(e.target.value)} disabled />
